@@ -263,6 +263,7 @@ Data visualization can be taken as a next step after this data analysis project.
             FROM populationpercentagevaccinated
             ORDER BY date desc;
 
+Also, the dataset can be updated, and the queries would still be able to extract the desired insights.
 
 ## Conclusion 
 
