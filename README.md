@@ -5,9 +5,17 @@
 
 This data analytics project aims to gain more insight into the COVID-19 pandemic from inception till the present date (2021-04-30). Using Covid 19 data from [ourworldindata.org](https://ourworldindata.org/coronavirus), various questions about the pandemic would be answered using SQL to query the data.
 
-## Solution
+##  ETL (Extract Transform and Load)
 
-1. What is the possibility of dying from COVID in your country (death rate)?
+CSV files on the pandemic were downloaded from [ourworldindata.org](https://ourworldindata.org/coronavirus). These files were converted to Microsoft Excel files.
+
+Then MS Server Integration Services (SSIS) was used to load the data from the Microsoft Excel files to a Microsoft SQL Server database.
+
+This database was then queried using the SQL queries below.
+
+## Data Analysis
+
+1. What is the possibility of dying from COVID-19 in your country (death rate)?
 
             SELECT
                   location,
@@ -233,6 +241,27 @@ Another approach.
             ORDER BY location;
 
 ![testing rate](https://github.com/Jucodez/Covid-19-Data-Analytics-Projects/assets/102746691/7bb67bca-6caf-47bd-acbb-ff4cb076c2ea)
+
+## Next Steps
+Data visualization can be taken as a next step after this data analysis project. This would help even better understand the data. To achieve this, the SQL database can be connected to a business intelligence tool. However, a view can be used to extract only a selected portion of the data for visualization.
+
+            CREATE OR ALTER VIEW populationpercentagevaccinated
+            AS
+            SELECT
+                death.location,
+                death.date,
+                death.population,
+                vaccine.new_vaccinations,
+                SUM(vaccine.new_vaccinations) OVER (PARTITION BY death.location ORDER BY death.location, death.date) AS rolling_people_vaccination
+            FROM CovidDeaths death
+            JOIN CovidVaccinations vaccine
+                ON death.location = vaccine.location
+                AND death.date = vaccine.date
+            WHERE death.continent IS NOT NULL;
+            
+            SELECT * 
+            FROM populationpercentagevaccinated
+            ORDER BY date desc;
 
 
 ## Conclusion 
